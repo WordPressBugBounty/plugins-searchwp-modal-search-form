@@ -1,0 +1,296 @@
+# Copyright (C) 2022 SearchWP, LLC
+# This file is distributed under the same license as the SearchWP Modal Search Form plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: SearchWP Modal Search Form 0.5.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/searchwp-modal-search-form\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2022-07-11T13:50:11+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.5.0\n"
+"X-Domain: searchwp-modal-search-form\n"
+
+#. Plugin Name of the plugin
+msgid "SearchWP Modal Search Form"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://searchwp.com/extensions/modal-form/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Lightweight and accessible search form"
+msgstr ""
+
+#. Author of the plugin
+msgid "SearchWP, LLC"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://searchwp.com/"
+msgstr ""
+
+#: includes/AdminMenu.php:93
+#: includes/AdminMenu.php:114
+#: includes/AdminMenu.php:145
+#: assets/src/block.js:17
+msgid "Modal Form"
+msgstr ""
+
+#: includes/AdminMenu.php:108
+#: includes/AdminMenu.php:128
+msgid "SearchWP"
+msgstr ""
+
+#: includes/AdminMenu.php:161
+#: includes/AdminMenu.php:162
+msgid "Upgrade to Pro"
+msgstr ""
+
+#: includes/functions.php:11
+#: includes/Shortcode.php:17
+#: assets/src/block.js:50
+msgid "Search"
+msgstr ""
+
+#: includes/functions.php:150
+msgid "Native WordPress"
+msgstr ""
+
+#: includes/Menu.php:81
+msgid "(SearchWP Modal Form error!)"
+msgstr ""
+
+#: includes/Menu.php:172
+msgid "SearchWP Modal Search Forms"
+msgstr ""
+
+#: includes/Menu.php:249
+msgid "Select all"
+msgstr ""
+
+#: includes/Menu.php:252
+msgid "Add to menu"
+msgstr ""
+
+#: includes/Plugin.php:210
+msgid "Template not found!"
+msgstr ""
+
+#: includes/Plugin.php:365
+msgid "Upgrade to SearchWP Pro"
+msgstr ""
+
+#: includes/Plugin.php:366
+msgid "Get SearchWP Pro"
+msgstr ""
+
+#: includes/Plugin.php:378
+msgid "Go to SearchWP Settings page"
+msgstr ""
+
+#: includes/Plugin.php:379
+#: includes/Settings.php:81
+#: includes/Settings.php:345
+msgid "Settings"
+msgstr ""
+
+#: includes/Plugin.php:395
+msgid "Read the documentation"
+msgstr ""
+
+#: includes/Plugin.php:396
+msgid "Docs"
+msgstr ""
+
+#: includes/Settings.php:166
+msgid "Save Settings"
+msgstr ""
+
+#: includes/Settings.php:385
+msgid "Get SearchWP Pro and Unlock all the Powerful Features"
+msgstr ""
+
+#: includes/Settings.php:386
+msgid "Thank you for being a loyal SearchWP Modal Search Form user. Upgrade to SearchWP Pro to unlock all the powerful features and experience why SearchWP is the best WordPress search plugin."
+msgstr ""
+
+#. translators: %s - star icons.
+#: includes/Settings.php:391
+msgid "We know that you will truly love SearchWP Pro. It’s used on over 30,000 smart WordPress websites and is consistently rated 5-stars (%s) by our customers."
+msgstr ""
+
+#: includes/Settings.php:403
+msgid "Pro Features:"
+msgstr ""
+
+#: includes/Settings.php:406
+msgid "Search all custom field data"
+msgstr ""
+
+#: includes/Settings.php:407
+msgid "Make ecommerce metadata discoverable in search results"
+msgstr ""
+
+#: includes/Settings.php:408
+msgid "Search PDF, .doc, .txt and other static documents"
+msgstr ""
+
+#: includes/Settings.php:409
+msgid "Search custom database tables and other custom content"
+msgstr ""
+
+#: includes/Settings.php:410
+msgid "Make your media library (images, videos, etc.) searchable"
+msgstr ""
+
+#: includes/Settings.php:413
+msgid "Search categories, tags and even custom taxonomies"
+msgstr ""
+
+#: includes/Settings.php:414
+msgid "Easy integration with all WordPress themes and page builders"
+msgstr ""
+
+#: includes/Settings.php:415
+msgid "Advanced search metrics and insights on visitor activity"
+msgstr ""
+
+#: includes/Settings.php:416
+msgid "Multiple custom search engines for different types of content"
+msgstr ""
+
+#: includes/Settings.php:417
+msgid "WooCommerce & Easy Digital Downloads support"
+msgstr ""
+
+#: includes/Settings.php:420
+#: includes/Settings.php:524
+msgid "Get SearchWP Pro Today"
+msgstr ""
+
+#: includes/Settings.php:420
+msgid "Get SearchWP Pro Today and Unlock all the Powerful Features"
+msgstr ""
+
+#: includes/Settings.php:424
+#: includes/Settings.php:528
+msgid "<strong>Bonus:</strong> SearchWP Modal Search Form users get <span class=\"green\">50% off the regular price</span>, automatically applied at checkout!"
+msgstr ""
+
+#. translators: $1$s - SearchWP plugin name; $2$s - WP.org review link; $3$s - WP.org review link.
+#: includes/Settings.php:460
+msgid "Please rate %1$s <a href=\"%2$s\" target=\"_blank\" rel=\"noopener noreferrer\">&#9733;&#9733;&#9733;&#9733;&#9733;</a> on <a href=\"%3$s\" target=\"_blank\" rel=\"noopener\">WordPress.org</a> to help us spread the word. Thank you from the SearchWP team!"
+msgstr ""
+
+#: includes/Settings.php:511
+msgid "Did You Know?"
+msgstr ""
+
+#: includes/Settings.php:515
+msgid "By default, most of your site content is hidden from search results. <strong><em>That’s frustrating</em></strong>, because it leaves your visitors unable to find what they are searching for - meaning lost subscribers, leads and sales for you!"
+msgstr ""
+
+#: includes/Settings.php:523
+msgid "With SearchWP Pro, you can grow your business faster by making all of your site content searchable, such as custom fields, ecommerce data, categories, PDF documents, rich media and more!"
+msgstr ""
+
+#: includes/SettingsApi.php:88
+msgid "Settings were successfully saved."
+msgstr ""
+
+#: includes/SettingsApi.php:169
+msgid "General"
+msgstr ""
+
+#: includes/SettingsApi.php:175
+msgid "Enable Modal Form"
+msgstr ""
+
+#: includes/SettingsApi.php:176
+msgid "Check this option to enable the Modal Search Form."
+msgstr ""
+
+#: includes/SettingsApi.php:183
+msgid "Modal"
+msgstr ""
+
+#: includes/SettingsApi.php:189
+msgid "Include Styling"
+msgstr ""
+
+#: includes/SettingsApi.php:190
+msgid "Determines which CSS files to load and use for the site. \"Positioning and visual styling\" is recommended, unless you are experienced with CSS or instructed by support to change settings."
+msgstr ""
+
+#: includes/SettingsApi.php:194
+msgid "Positioning and visual styling"
+msgstr ""
+
+#: includes/SettingsApi.php:195
+msgid "Positioning styling only"
+msgstr ""
+
+#: includes/SettingsApi.php:196
+msgid "No styling"
+msgstr ""
+
+#: includes/SettingsApi.php:201
+msgid "Full Screen Mode"
+msgstr ""
+
+#: includes/SettingsApi.php:202
+msgid "Check this option to make the modal cover the entire screen when open. This option is great to provide a distraction free search experience for your users."
+msgstr ""
+
+#: includes/SettingsApi.php:207
+msgid "Disable Scroll"
+msgstr ""
+
+#: includes/SettingsApi.php:208
+msgid "Check this option to disable background scrolling of the page when the modal is open."
+msgstr ""
+
+#: assets/src/block.js:20
+msgid "Insert a modal search form"
+msgstr ""
+
+#: assets/src/block.js:25
+msgid "Improve your search with SearchWP"
+msgstr ""
+
+#: assets/src/block.js:34
+msgid "modal"
+msgstr ""
+
+#: assets/src/block.js:35
+msgid "search"
+msgstr ""
+
+#: assets/src/block.js:36
+msgid "overlay"
+msgstr ""
+
+#: assets/src/block.js:69
+msgid "Text"
+msgstr ""
+
+#: assets/src/block.js:77
+msgid "Template"
+msgstr ""
+
+#: assets/src/block.js:86
+msgid "Type"
+msgstr ""
+
+#: assets/src/block.js:90
+msgid "Link"
+msgstr ""
+
+#: assets/src/block.js:94
+msgid "Button"
+msgstr ""
