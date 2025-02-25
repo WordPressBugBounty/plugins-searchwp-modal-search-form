@@ -50,11 +50,7 @@ class SearchWPModalFormMenu {
 		$dom = new DOMDocument();
 		libxml_use_internal_errors( true );
 
-		if ( function_exists( 'mb_convert_encoding' ) ) {
-			$dom->loadHTML( mb_convert_encoding( $nav_menu, 'ISO-8859-1', 'UTF-8' ) );
-		} else {
-			$dom->loadHTML( $nav_menu );
-		}
+		$dom->loadHTML( $nav_menu );
 
 		foreach ( $dom->getElementsByTagName( 'a' ) as $link ) {
 
@@ -83,9 +79,14 @@ class SearchWPModalFormMenu {
 		}
 
 		// We have a fully developed HTML document, but we only want the menu itself.
-		$full_html = $dom->saveHTML();
-		$start = strpos( $full_html, '<body>' ) + 6;
-		$length = strpos( $full_html, '</body>' ) - $start;
+        if ( function_exists( 'mb_convert_encoding' ) ) {
+			$full_html = mb_convert_encoding( $dom->saveHTML( $dom->documentElement ), 'ISO-8859-1', 'UTF-8' ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		} else {
+			$full_html = $dom->saveHTML( $dom->documentElement ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+		}
+
+		$start    = strpos( $full_html, '<body>' ) + 6;
+		$length   = strpos( $full_html, '</body>' ) - $start;
 		$nav_menu = substr(
 			$full_html,
 			$start,

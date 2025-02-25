@@ -1,5 +1,7 @@
 <?php
 
+use SearchWPModalFormUtils as Utils;
+
 // Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -115,7 +117,11 @@ class SearchWPModalFormInstall {
 		}
 
 		// Initial install.
-		wp_safe_redirect( admin_url( 'admin.php?page=searchwp-modal-form' ) );
+		if ( Utils::is_searchwp_active() ) {
+			wp_safe_redirect( admin_url( 'admin.php?page=searchwp-forms&tab=search-modal' ) );
+		} else {
+			wp_safe_redirect( admin_url( 'admin.php?page=searchwp-modal-form' ) );
+		}
 		exit;
 	}
 }

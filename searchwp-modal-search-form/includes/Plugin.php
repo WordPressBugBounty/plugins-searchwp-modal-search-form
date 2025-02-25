@@ -397,11 +397,22 @@ class SearchWP_Modal_Form {
 			);
 		}
 
+		if ( Utils::is_searchwp_active() ) {
+			$settings_url_arg = [
+				'page' => 'searchwp-forms',
+				'tab'  => 'search-modal',
+			];
+		} else {
+			$settings_url_arg = [
+				'page' => 'searchwp-modal-form',
+			];
+		}
+
 		$custom['settings'] = sprintf(
 			'<a href="%s" aria-label="%s">%s</a>',
 			esc_url(
 				add_query_arg(
-					[ 'page' => 'searchwp-modal-form' ],
+					$settings_url_arg,
 					admin_url( 'admin.php' )
 				)
 			),

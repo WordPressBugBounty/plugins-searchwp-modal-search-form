@@ -1,4 +1,4 @@
-# Copyright (C) 2022 SearchWP, LLC
+# Copyright (C) 2024 SearchWP, LLC
 # This file is distributed under the same license as the SearchWP Modal Search Form plugin.
 msgid ""
 msgstr ""
