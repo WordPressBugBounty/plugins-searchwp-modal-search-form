@@ -31,27 +31,11 @@ class SearchWPModalFormAdminMenu {
 	 */
 	public function hooks() {
 
-        if ( Utils::is_searchwp_active() ) {
+        if ( Utils::is_searchwp_active() || Utils::is_live_search_active() ) {
 			return;
         }
 
-		if ( Utils::is_live_search_active() ) {
-			$this->hooks_live_search_enabled();
-
-			return;
-		}
-
 		$this->hooks_modal_form_standalone();
-	}
-
-	/**
-	 * Hooks when Live Ajax Search is enabled.
-	 *
-	 * @since 0.5.0
-	 */
-	private function hooks_live_search_enabled() {
-
-		add_filter( 'searchwp_live_search_options_submenu_pages', [ $this, 'add_menus_live_search_enabled' ] );
 	}
 
 	/**

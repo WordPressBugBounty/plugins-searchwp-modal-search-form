@@ -26,7 +26,9 @@ class SearchWPModalFormSettings {
 		add_action( 'admin_enqueue_scripts', [ $this, 'assets' ] );
 
         if ( Utils::is_searchwp_active() ) {
-            $this->hooks_searchwp_enabled();
+			$this->hooks_searchwp_enabled();
+		} elseif ( Utils::is_live_search_active() ) {
+			$this->hooks_live_search_enabled();
         } else {
 	        $this->hooks_searchwp_disabled();
         }
@@ -88,6 +90,38 @@ class SearchWPModalFormSettings {
 			add_action( 'searchwp\settings\view', [ $this, 'output' ] );
 		}
     }
+
+	/**
+	 * Hooks if Live Search is enabled.
+	 *
+	 * @since 0.5.5
+	 */
+	private function hooks_live_search_enabled() {
+
+		add_filter( 'searchwp_live_search_settings_sub_header_items', [ $this, 'add_sub_header_items' ], 20 );
+		add_action( 'searchwp_live_search_modal_form_render', [ $this, 'output' ] );
+		add_filter( 'admin_footer_text', [ $this, 'admin_footer_rate_us_searchwp_disabled' ], 1, 2 );
+	}
+
+	/**
+	 * Add the Search Modal sub header item.
+	 *
+	 * @since 0.5.5
+	 *
+	 * @param array $items The sub header items.
+	 *
+	 * @return mixed
+	 */
+	public static function add_sub_header_items( $items ) {
+
+		$items['searchwp-live-search'][] = [
+			'page'  => 'searchwp-live-search',
+			'tab'   => 'search-modal',
+			'label' => esc_html__( 'Search Modal', 'searchwp-modal-search-form' ),
+		];
+
+		return $items;
+	}
 
 	/**
 	 * Hooks if SearchWP is disabled.
@@ -161,7 +195,7 @@ class SearchWPModalFormSettings {
 			</p>
 
 			<?php $this->output_after_settings(); ?>
-			
+
         </div>
 		<?php
 	}
@@ -536,7 +570,7 @@ class SearchWPModalFormSettings {
 
 		global $current_screen;
 
-		if ( empty( $current_screen->id ) || strpos( $current_screen->id, 'searchwp-modal-form' ) === false ) {
+		if ( ! Utils::is_settings_page() ) {
 			return $text;
 		}
 

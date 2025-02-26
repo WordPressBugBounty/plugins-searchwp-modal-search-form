@@ -57,14 +57,14 @@ class SearchWPModalFormUtils {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page = isset( $_REQUEST['page'] ) ? sanitize_key( $_REQUEST['page'] ) : '';
 
-		if ( ! in_array( $page, [ 'searchwp-modal-form', 'searchwp-forms' ], true ) ) {
+		if ( ! in_array( $page, [ 'searchwp-modal-form', 'searchwp-forms', 'searchwp-live-search' ], true ) ) {
 			return false;
 		}
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$view = isset( $_REQUEST['tab'] ) ? sanitize_key( $_REQUEST['tab'] ) : '';
 
-		if ( $page === 'searchwp-forms' && $view !== 'search-modal' ) {
+		if ( in_array( $page, [ 'searchwp-forms', 'searchwp-live-search' ], true ) && $view !== 'search-modal' ) {
 			return false;
 		}
 

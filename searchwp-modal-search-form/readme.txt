@@ -4,7 +4,7 @@ Tags: search, modal, form, searchform, SearchWP
 Requires at least: 5.0
 Tested up to: 6.5
 Requires PHP: 7.0
-Stable tag: 0.5.4
+Stable tag: 0.5.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,9 @@ Please review the [full template documentation](https://searchwp.com/extensions/
 5. Insert modal triggers as Gutenberg Blocks
 
 == Changelog ==
+
+*0.5.5*
+- Fixes settings page appearance and menu structure when SearchWP Live Search is active.
 
 *0.5.4*
 - Fixes Settings link location in the plugins list when SearchWP is activated.
