@@ -31,7 +31,7 @@
 	<div class="searchwp-modal-form__overlay" tabindex="-1" data-searchwp-modal-form-close>
 		<div class="searchwp-modal-form__container" role="dialog" aria-modal="true">
 			<div class="searchwp-modal-form__content">
-				<?php echo get_search_form(); ?>
+				<?php searchwp_modal_get_search_form(); ?>
 			</div>
 			<footer class="searchwp-modal-form__footer">
 				<button class="searchwp-modal-form__close button" aria-label="Close" data-searchwp-modal-form-close></button>

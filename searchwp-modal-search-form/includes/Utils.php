@@ -187,4 +187,23 @@ class SearchWPModalFormUtils {
 
 		return (bool) $result;
 	}
+
+	/**
+	 * Get search icon SVG markup.
+	 *
+	 * @since 0.5.6
+	 *
+	 * @return string|false SVG markup if the file exists, false otherwise.
+	 */
+	public static function get_search_icon() {
+
+		$svg_file_path = plugin_dir_path( __DIR__ ) . 'assets/images/swp-search.svg';
+
+		// Load the SVG content from file.
+		if ( file_exists( $svg_file_path ) ) {
+			return file_get_contents( $svg_file_path );
+		}
+
+		return false;
+	}
 }

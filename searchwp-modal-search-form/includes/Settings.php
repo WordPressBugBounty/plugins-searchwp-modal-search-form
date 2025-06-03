@@ -47,6 +47,32 @@ class SearchWPModalFormSettings {
 			return;
 		}
 
+		// Enqueue Choices.js library.
+		wp_enqueue_script(
+			'searchwp-modal-form-choicesjs',
+			SEARCHWP_MODAL_FORM_PLUGIN_URL . 'assets/vendor/choicesjs/js/choices-10.2.0.min.js',
+			[],
+			'10.2.0',
+			true
+		);
+
+		// Enqueue Choices.js CSS.
+		wp_enqueue_style(
+			'searchwp-modal-form-choicesjs',
+			SEARCHWP_MODAL_FORM_PLUGIN_URL . 'assets/vendor/choicesjs/css/choices-10.2.0.min.css',
+			[],
+			'10.2.0'
+		);
+
+		// Enqueue custom script to initialize Choices.js.
+		wp_enqueue_script(
+			'searchwp-modal-form-choices-init',
+			SEARCHWP_MODAL_FORM_PLUGIN_URL . 'assets/js/admin/choices-init.js',
+			[ 'searchwp-modal-form-choicesjs' ],
+			SEARCHWP_MODAL_FORM_VERSION,
+			true
+		);
+
 		wp_enqueue_style(
 			'searchwp-modal-form-styles',
 			SEARCHWP_MODAL_FORM_PLUGIN_URL . 'assets/styles/admin/style.css',
@@ -324,7 +350,7 @@ class SearchWPModalFormSettings {
 		$data = implode( ' ', $data );
 		$attr = implode( ' ', array_map( 'sanitize_html_class', $attr ) );
 
-		$output = '<select id="searchwp-modal-form-setting-' . $slug . '" name="' . $slug . '" ' . $data . $attr . '>';
+		$output = '<select id="searchwp-setting-' . $slug . '" class="swp-choicesjs-select" name="' . $slug . '" ' . $data . $attr . '>';
 
 		foreach ( $args['options'] as $option => $name ) {
 			if ( empty( $args['selected'] ) ) {

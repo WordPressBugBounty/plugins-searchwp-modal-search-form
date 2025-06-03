@@ -1,5 +1,8 @@
 <?php
 
+use SearchWPModalFormUtils as Utils;
+use SearchWPModalFormSettingsApi as SettingsApi;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -29,13 +32,8 @@ function searchwp_modal_form_trigger( $args ) {
 	);
 
 	if ( class_exists( 'SearchWP' ) ) {
-		// SearchWP 3.x compat.
-		if ( class_exists( '\\SearchWP\\Settings' ) ) {
-			$engine_settings = \SearchWP\Settings::get_engine_settings( $args['engine'] );
-			$engine = $engine_settings ? $args['engine'] : 'default';
-		} else if ( function_exists( 'SWP' ) ) {
-			$engine = SWP()->is_valid_engine( $args['engine'] ) ? $args['engine'] : 'default';
-		}
+		$engine_settings = \SearchWP\Settings::get_engine_settings( $args['engine'] );
+		$engine          = $engine_settings ? $args['engine'] : 'default';
 	} else {
 		$engine = '{wp_native}';
 	}
@@ -58,6 +56,16 @@ function searchwp_modal_form_trigger( $args ) {
 			<?php echo wp_kses( $args['text'], apply_filters( 'searchwp_modal_form_trigger_text_kses', 'post' ) ); ?>
 		</button>
 		<?php
+	} elseif ( $args['type'] === 'icon' ) {
+		?>
+		<a
+			href="<?php echo esc_attr( '#searchwp-modal-' . $modal_hash ); ?>"
+			class="<?php echo esc_attr( $args['class'] ); ?>"
+			data-searchwp-modal-trigger="<?php echo esc_attr( 'searchwp-modal-' . $modal_hash ); ?>"
+		>
+			<span class="searchwp-modal-form-trigger-icon"><?php echo Utils::get_search_icon(); ?></span> <?php // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		</a>
+		<?php
 	} else {
 		?>
 		<a
@@ -74,17 +82,34 @@ function searchwp_modal_form_trigger( $args ) {
 	if ( $args['echo'] ) {
 		echo wp_kses(
 			$output,
-			array(
-				'a' => array(
-					'class'                       => array(),
-					'href'                        => array(),
-					'data-searchwp-modal-trigger' => array(),
-				),
-				'button' => array(
-					'class'                       => array(),
-					'data-searchwp-modal-trigger' => array(),
-				),
-			)
+			[
+				'a'      => [
+					'class'                       => [],
+					'href'                        => [],
+					'data-searchwp-modal-trigger' => [],
+				],
+				'button' => [
+					'class'                       => [],
+					'data-searchwp-modal-trigger' => [],
+				],
+				'span'   => [
+					'class' => [],
+				],
+				'svg'    => [
+					'class'       => [],
+					'aria-hidden' => [],
+					'role'        => [],
+					'xmlns'       => [],
+					'width'       => [],
+					'height'      => [],
+					'viewbox'     => [],
+					'fill'        => [],
+				],
+				'path'   => [
+					'd'    => [],
+					'fill' => [],
+				],
+			]
 		);
 	} else {
 		return $output;
@@ -153,16 +178,11 @@ function searchwp_modal_form_get_engines() {
 
 	// Override if SearchWP is active.
 	if ( class_exists( 'SearchWP' ) ) {
-		// SearchWP 3.x compat.
-		if ( class_exists( '\\SearchWP\\Settings' ) ) {
-			$engines_settings = \SearchWP\Settings::_get_engines_settings();
-			$engines = array();
+		$engines_settings = \SearchWP\Settings::_get_engines_settings();
+		$engines          = [];
 
-			foreach ( $engines_settings as $name => $settings ) {
-				$engines[ $name ] = array( 'searchwp_engine_label' => $settings['label'] );
-			}
-		} else if ( function_exists( 'SWP' ) ) {
-			$engines = SWP()->settings['engines'];
+		foreach ( $engines_settings as $name => $settings ) {
+			$engines[ $name ] = [ 'searchwp_engine_label' => $settings['label'] ];
 		}
 	}
 
@@ -180,14 +200,9 @@ function searchwp_modal_form_get_forms() {
 
 	foreach ( $engines as $engine_name => $engine_settings ) {
 
-		// SearchWP 3.x compat.
-		if ( is_object( $engine_settings ) && method_exists( $engine_settings, 'get_label' ) ) {
-			$engine_label = $engine_settings->get_label();
-		} else {
-			$engine_label = isset( $engine_settings['searchwp_engine_label'] )
-				? $engine_settings['searchwp_engine_label']
-				: __( 'Default', 'searchwp' );
-		}
+		$engine_label = isset( $engine_settings['searchwp_engine_label'] )
+			? $engine_settings['searchwp_engine_label']
+			: __( 'Default', 'searchwp-modal-search-form' );
 
 		foreach ( $templates as $template ) {
 			$hash = searchwp_modal_form_get_template_hash( $engine_name, $template['file'] );
@@ -290,3 +305,40 @@ function searchwp_modal_form_get_name_from_menu_item( $menu_item ) {
 
 	return $modal_name;
 }
+
+/**
+ * Retrieves the search form based on the SearchWP or Live Search configuration, falling back to the default WordPress search form if necessary.
+ *
+ * @since 0.5.6
+ *
+ * @param bool $render Whether to echo the search form HTML or return it. Default true.
+ *
+ * @return string The rendered search form HTML.
+ */
+function searchwp_modal_get_search_form( $render = true ) {
+
+	$search_form_id = SettingsApi::get( 'search-form' );
+
+	if ( empty( $search_form_id ) ) {
+		$form = get_search_form( false );
+	} else {
+		$form = '';
+
+		if ( Utils::is_searchwp_active() ) {
+			$form = \SearchWP\Forms\Frontend::render( [ 'id' => absint( $search_form_id ) ] );
+		} elseif ( Utils::is_live_search_active() ) {
+			$form = SearchWP_Live_Search_Frontend::render( [ 'id' => absint( $search_form_id ) ] );
+		}
+
+		$form = ! empty( $form ) ? $form : get_search_form( false );
+	}
+
+	if ( $render ) {
+		echo $form; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+		return '';
+	}
+
+	return $form;
+}
+

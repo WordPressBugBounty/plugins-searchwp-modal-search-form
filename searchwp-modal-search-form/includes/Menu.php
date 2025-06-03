@@ -1,5 +1,7 @@
 <?php
 
+use SearchWPModalFormUtils as Utils;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -9,10 +11,11 @@ class SearchWPModalFormMenu {
 	public function __construct() {
 		// We rely on DOMDocument when outputting Menu Items.
 		if ( class_exists( 'DOMDocument' ) ) {
-			add_action( 'load-nav-menus.php', array( $this, 'add_nav_menu_meta_boxes' ) );
-			add_action( 'admin_print_footer_scripts-nav-menus.php', array( $this, 'customize_nav_items' ) );
-			add_filter( 'wp_nav_menu', array( $this, 'wp_nav_menu' ), 10, 2 );
-			add_filter( 'wp_setup_nav_menu_item', array( $this, 'check_menu_item' ) );
+			add_action( 'load-nav-menus.php', [ $this, 'add_nav_menu_meta_boxes' ] );
+			add_action( 'admin_print_footer_scripts-nav-menus.php', [ $this, 'customize_nav_items' ] );
+			add_filter( 'wp_nav_menu', [ $this, 'wp_nav_menu' ], 10, 2 );
+			add_filter( 'wp_setup_nav_menu_item', [ $this, 'check_menu_item' ] );
+			add_action( 'wp_update_nav_menu_item', [ $this, 'update_nav_menu_item' ], 10, 2 );
 		}
 	}
 
@@ -53,6 +56,12 @@ class SearchWPModalFormMenu {
 		$dom->loadHTML( $nav_menu );
 
 		foreach ( $dom->getElementsByTagName( 'a' ) as $link ) {
+			// Get the menu item ID from the parent li element.
+			$menu_item_id = '';
+			$parent_li    = $link->parentNode; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+			if ( $parent_li && $parent_li->hasAttribute( 'id' ) ) {
+				$menu_item_id = str_replace( 'menu-item-', '', $parent_li->getAttribute( 'id' ) );
+			}
 
 			// If there's no URI flag for a modal, skip this.
 			$modal_name = searchwp_modal_form_get_name_from_uri( $link->getAttribute( 'href' ) );
@@ -66,6 +75,27 @@ class SearchWPModalFormMenu {
 			if ( array_key_exists( $modal_name, $forms ) ) {
 				// Attach our data attribute that acts as a trigger for this modal.
 				$link->setAttribute( 'data-searchwp-modal-trigger', esc_attr( 'searchwp-modal-' . $modal_name ) );
+
+				// Check if we should show the icon.
+				$show_icon = get_post_meta( $menu_item_id, '_swp_modal_forms_use_icon', true );
+
+				if ( $show_icon ) {
+					// Create a new document fragment to hold our SVG.
+					$fragment = $dom->createDocumentFragment();
+					// Get the SVG icon.
+					$search_icon = Utils::get_search_icon();
+
+					if ( ! empty( $search_icon ) ) {
+						$fragment->appendXML( $search_icon );
+						// Clear existing content.
+						while ( $link->hasChildNodes() ) {
+							$link->removeChild( $link->firstChild ); // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
+						}
+
+						// Append the SVG to the link.
+						$link->appendChild( $fragment );
+					}
+				}
 
 				// Enqueue modal template.
 				add_filter( 'searchwp_modal_form_queue', function( $forms ) use ( $modal_name ) {
@@ -107,9 +137,21 @@ class SearchWPModalFormMenu {
 	 * to determine which Menu items are in fact ours, and we can then customize from there.
 	 */
 	public function customize_nav_items() {
+
+		global $wpdb;
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$items_with_show_icons = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT * FROM {$wpdb->postmeta} WHERE meta_key = %s",
+				'_swp_modal_forms_use_icon'
+			)
+		);
+
 		?>
 			<script type="text/javascript">
 				var _SEARCHWP_MODAL_FORMS = JSON.parse('<?php echo wp_json_encode( searchwp_modal_form_get_forms() ); ?>');
+				var _SEARCHWP_MODAL_FORMS_ICONS = JSON.parse('<?php echo wp_json_encode( $items_with_show_icons ); ?>');
 
 				var searchwp_modal_forms_update_menu_items = function() {
 					let $menu = jQuery('#menu-to-edit');
@@ -145,16 +187,32 @@ class SearchWPModalFormMenu {
 
 							// TODO: i18n.
 							menu_item_note = 'This is a SearchWP Modal Search Form.<br><strong>Engine:</strong> ' + data.engine_label  + '<br><strong>Template:</strong> ' + data.template_label;
+
+							// Add checkbox for icon display preference if it doesn't exist
+							if (!$this.find('.searchwp-modal-form-show-icon').length) {
+								var menuItemId = $this.find('.menu-item-data-db-id').val();
+								var showIcon = _SEARCHWP_MODAL_FORMS_ICONS.some(function (item) {
+									return item.post_id == menuItemId && item.meta_value === '1';
+								});
+								var $checkbox = jQuery('<p class="field-icon-display description"><label><input type="checkbox" class="searchwp-modal-form-show-icon" name="menu-item[' + menuItemId + '][icon-display]" value="1" ' + (showIcon ? 'checked' : '') + ' /> Show search icon instead of label</label></p>');
+								$this.find('.menu-item-settings').prepend($checkbox);
+							}
 						}
 
-						// Set a proper title, customize content, and hide inapplicable elements.
+						// Set a proper title.
 						$this.find('.item-type').text('Modal Search Form');
-						$this.find('.menu-item-settings')
-							.prepend('<p style="margin-bottom: 1em;" class="description searchwp-modal-search-form-note">' + menu_item_note + '</p>')
-							.children()
+
+						// Customize content, and hide inapplicable elements.
+						let $menu_item_settings = $this.find('.menu-item-settings');
+						if ( ! $menu_item_settings.find('.searchwp-modal-search-form-note').length ) {
+							$menu_item_settings.prepend('<p style="margin-bottom: 1em;" class="description searchwp-modal-search-form-note">' + menu_item_note + '</p>');
+						}
+
+						$menu_item_settings.children()
 							.not('.description, .field-move, .menu-item-actions, .searchwp-modal-search-form-note')
 							.hide();
 						$this.find('p.description.field-url').hide();
+
 					});
 				};
 
@@ -171,7 +229,7 @@ class SearchWPModalFormMenu {
 		add_meta_box(
 			'searchwp_modal_form_nav_link',
 			__( 'SearchWP Modal Search Forms', 'searchwp-modal-search-form' ),
-			array( $this, 'nav_menu_links' ),
+			[ $this, 'nav_menu_links' ],
 			'nav-menus',
 			'side',
 			'low'
@@ -256,6 +314,27 @@ class SearchWPModalFormMenu {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Save custom menu item fields.
+	 *
+	 * @since 0.5.6
+	 *
+	 * @param int $menu_id         The menu ID.
+	 * @param int $menu_item_db_id The menu item ID.
+	 */
+	public function update_nav_menu_item( $menu_id, $menu_item_db_id ) {
+
+		// Check if this is a modal search form menu item.
+		if ( ! empty( $_POST['menu-item-url'][ $menu_item_db_id ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			$url = sanitize_text_field( wp_unslash( $_POST['menu-item-url'][ $menu_item_db_id ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing
+			if ( strpos( $url, '#searchwp-modal-' ) === 0 ) {
+				// Save the icon display preference.
+				$show_icon = ! empty( $_POST['menu-item'][ $menu_item_db_id ]['icon-display'] ) ? '1' : '0'; // phpcs:ignore WordPress.Security.NonceVerification.Missing
+				update_post_meta( $menu_item_db_id, '_swp_modal_forms_use_icon', $show_icon );
+			}
+		}
 	}
 }
 

@@ -131,17 +131,17 @@ class SearchWPModalFormSettingsApi {
 	 *
 	 * @return mixed
 	 */
-	public function get( $slug, $default = null ) {
+	public static function get( $slug, $default_value = null ) {
 
 		$slug     = sanitize_key( $slug );
 		$settings = get_option( self::OPTION_NAME );
 
-		if ( $default === null ) {
-			$registered = $this->get_registered_settings();
-			$default    = isset( $registered[ $slug ]['default'] ) ? $registered[ $slug ]['default'] : $default;
+		if ( $default_value === null ) {
+			$registered    = self::get_registered_settings();
+			$default_value = isset( $registered[ $slug ]['default'] ) ? $registered[ $slug ]['default'] : $default_value;
 		}
 
-		return isset( $settings[ $slug ] ) ? wp_unslash( $settings[ $slug ] ) : $default;
+		return isset( $settings[ $slug ] ) ? wp_unslash( $settings[ $slug ] ) : $default_value;
 	}
 
 	/**
@@ -151,7 +151,7 @@ class SearchWPModalFormSettingsApi {
 	 *
 	 * @return array
 	 */
-	public function get_registered_settings() {
+	public static function get_registered_settings() {
 
 		$defaults = [
 			'general-heading'      => [
@@ -174,43 +174,60 @@ class SearchWPModalFormSettingsApi {
 				'type'    => 'content',
 				'class'   => [ 'section-heading' ],
 			],
-			'include-frontend-css' => [
-				'slug'    => 'include-frontend-css',
-				'name'    => esc_html__( 'Include Styling', 'searchwp-modal-search-form' ),
-				'desc'    => esc_html__( 'Determines which CSS files to load and use for the site. "Positioning and visual styling" is recommended, unless you are experienced with CSS or instructed by support to change settings.', 'searchwp-modal-search-form' ),
-				'type'    => 'select',
-				'default' => 'all',
-				'options' => [
-					'all'      => esc_html__( 'Positioning and visual styling', 'searchwp-modal-search-form' ),
-					'position' => esc_html__( 'Positioning styling only', 'searchwp-modal-search-form' ),
-					'none'     => esc_html__( 'No styling', 'searchwp-modal-search-form' ),
-				],
-			],
-			'modal-fullscreen'     => [
-				'slug' => 'modal-fullscreen',
-				'name' => esc_html__( 'Full Screen Mode', 'searchwp-modal-search-form' ),
-				'desc' => esc_html__( 'Check this option to make the modal cover the entire screen when open. This option is great to provide a distraction free search experience for your users.', 'searchwp-modal-search-form' ),
-				'type' => 'checkbox',
-			],
-			'modal-disable-scroll' => [
-				'slug' => 'modal-disable-scroll',
-				'name' => esc_html__( 'Disable Scroll', 'searchwp-modal-search-form' ),
-				'desc' => esc_html__( 'Check this option to disable background scrolling of the page when the modal is open.', 'searchwp-modal-search-form' ),
-				'type' => 'checkbox',
-			],
-			'misc-heading'         => [
-				'slug'    => 'misc-heading',
-				'content' => '<h3>' . esc_html__( 'Misc', 'searchwp-modal-search-form' ) . '</h3>',
-				'type'    => 'content',
-				'class'   => [ 'section-heading' ],
-			],
-			'hide-announcements'   => [
-				'slug' => 'hide-announcements',
-				'name' => esc_html__( 'Hide Announcements', 'searchwp-modal-search-form' ),
-				'desc' => esc_html__( 'Check this option to hide plugin announcements and update details.', 'searchwp-modal-search-form' ),
-				'type' => 'checkbox',
-			],
 		];
+
+		if ( Utils::is_searchwp_active() || Utils::is_live_search_active() ) {
+			$defaults['search-form'] = [
+				'slug'    => 'search-form',
+				'name'    => esc_html__( 'Search Form', 'searchwp-modal-search-form' ),
+				'desc'    => esc_html__( 'Select which Search form to use for the modal search.', 'searchwp-modal-search-form' ),
+				'type'    => 'select',
+				'default' => '',
+				'options' => self::get_search_form_options(),
+			];
+		}
+
+		$defaults = array_merge(
+			$defaults,
+			[
+				'include-frontend-css' => [
+					'slug'    => 'include-frontend-css',
+					'name'    => esc_html__( 'Include Styling', 'searchwp-modal-search-form' ),
+					'desc'    => esc_html__( 'Determines which CSS files to load and use for the site. "Positioning and visual styling" is recommended, unless you are experienced with CSS or instructed by support to change settings.', 'searchwp-modal-search-form' ),
+					'type'    => 'select',
+					'default' => 'all',
+					'options' => [
+						'all'      => esc_html__( 'Positioning and visual styling', 'searchwp-modal-search-form' ),
+						'position' => esc_html__( 'Positioning styling only', 'searchwp-modal-search-form' ),
+						'none'     => esc_html__( 'No styling', 'searchwp-modal-search-form' ),
+					],
+				],
+				'modal-fullscreen'     => [
+					'slug' => 'modal-fullscreen',
+					'name' => esc_html__( 'Full Screen Mode', 'searchwp-modal-search-form' ),
+					'desc' => esc_html__( 'Check this option to make the modal cover the entire screen when open. This option is great to provide a distraction free search experience for your users.', 'searchwp-modal-search-form' ),
+					'type' => 'checkbox',
+				],
+				'modal-disable-scroll' => [
+					'slug' => 'modal-disable-scroll',
+					'name' => esc_html__( 'Disable Scroll', 'searchwp-modal-search-form' ),
+					'desc' => esc_html__( 'Check this option to disable background scrolling of the page when the modal is open.', 'searchwp-modal-search-form' ),
+					'type' => 'checkbox',
+				],
+				'misc-heading'         => [
+					'slug'    => 'misc-heading',
+					'content' => '<h3>' . esc_html__( 'Misc', 'searchwp-modal-search-form' ) . '</h3>',
+					'type'    => 'content',
+					'class'   => [ 'section-heading' ],
+				],
+				'hide-announcements'   => [
+					'slug' => 'hide-announcements',
+					'name' => esc_html__( 'Hide Announcements', 'searchwp-modal-search-form' ),
+					'desc' => esc_html__( 'Check this option to hide plugin announcements and update details.', 'searchwp-modal-search-form' ),
+					'type' => 'checkbox',
+				],
+			]
+		);
 
 		return apply_filters( 'searchwp_modal_form_settings_defaults', $defaults );
 	}
@@ -239,5 +256,32 @@ class SearchWPModalFormSettingsApi {
         }
 
         return $value;
+	}
+
+	/**
+	 * Get list of available SearchWP forms.
+	 *
+	 * @since 0.5.0
+	 *
+	 * @return array
+	 */
+	private static function get_search_form_options() {
+
+		if ( Utils::is_searchwp_active() ) {
+			$forms = \SearchWP\Forms\Storage::get_all();
+		} elseif ( Utils::is_live_search_active() ) {
+			$forms = \SearchWP_Live_Search_Storage::get_all();
+		}
+
+		$options = [ 0 => esc_html__( 'Site Default', 'searchwp-modal-search-form' ) ];
+
+		if ( ! empty( $forms ) ) {
+			foreach ( $forms as $id => $form ) {
+				/* translators: %s: Form ID. */
+				$options[ $id ] = ! empty( $form['title'] ) ? $form['title'] : sprintf( esc_html__( 'Form %d', 'searchwp-modal-search-form' ), $id );
+			}
+		}
+
+		return $options;
 	}
 }

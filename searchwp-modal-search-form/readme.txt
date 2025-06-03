@@ -2,9 +2,9 @@
 Contributors: jchristopher, pavloopanasenko
 Tags: search, modal, form, searchform, SearchWP
 Requires at least: 5.0
-Tested up to: 6.5
+Tested up to: 6.8
 Requires PHP: 7.0
-Stable tag: 0.5.5
+Stable tag: 0.5.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,12 @@ Please review the [full template documentation](https://searchwp.com/extensions/
 5. Insert modal triggers as Gutenberg Blocks
 
 == Changelog ==
+
+*0.5.6*
+- Adds an option to display the Search Modal trigger as an icon.
+- Adds an option to select a SearchWP form to use in the modal if SearchWP is active.
+- Minor UI improvements.
+- Drops SearchWP 3.x support.
 
 *0.5.5*
 - Fixes settings page appearance and menu structure when SearchWP Live Search is active.

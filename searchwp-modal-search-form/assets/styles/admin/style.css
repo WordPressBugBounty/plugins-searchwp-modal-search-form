@@ -119,7 +119,7 @@
     margin: 0;
     font-weight: 700;
     font-size: 14px;
-    color: rgba(var(--neutralRBG), 0.9);
+    color: rgba(var(--neutralRGB), 0.9);
 }
 
 .searchwp-settings-row .desc {
@@ -132,6 +132,7 @@
 
 .searchwp-setting-field {
     margin: 0;
+	width: 100%;
     max-width: 1000px;
 }
 
@@ -165,6 +166,17 @@
     background-position: right 12px top 50%;
     background-size: 12px auto;
     padding-right: 33px;
+}
+
+.searchwp-setting-field .choices {
+	width: 100%;
+	min-width: 200px;
+	max-width: 400px;
+}
+
+.choices .choices__inner {
+	background: transparent;
+	min-height: unset;
 }
 
 
@@ -229,7 +241,7 @@ input.swp-toggle-checkbox:focus {
     background-color: rgba(var(--neutralRGB), 0.2);
 }
 
-.swp-toggle-switch:before, 
+.swp-toggle-switch:before,
 .swp-toggle-switch:after {
     content: "";
 }
