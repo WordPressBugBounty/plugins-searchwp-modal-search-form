@@ -2,9 +2,9 @@
 Contributors: jchristopher, pavloopanasenko
 Tags: search, modal, form, searchform, SearchWP
 Requires at least: 5.0
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 0.5.6
+Stable tag: 0.5.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -96,6 +96,9 @@ Please review the [full template documentation](https://searchwp.com/extensions/
 5. Insert modal triggers as Gutenberg Blocks
 
 == Changelog ==
+
+*0.5.7*
+- WordPress 6.9 compatibility.
 
 *0.5.6*
 - Adds an option to display the Search Modal trigger as an icon.

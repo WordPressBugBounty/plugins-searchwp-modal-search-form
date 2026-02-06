@@ -260,12 +260,11 @@ class SearchWP_Modal_Form {
 			return;
 		}
 
-		wp_register_script(
-			'searchwp-modal-form-block',
-			SEARCHWP_MODAL_FORM_PLUGIN_URL . 'assets/dist/block.build.js',
-			array( 'wp-blocks', 'wp-i18n', 'wp-components', 'wp-data', 'wp-editor', 'wp-element' ),
-			SEARCHWP_MODAL_FORM_VERSION,
-			true
+		register_block_type(
+			SEARCHWP_MODAL_FORM_PLUGIN_DIR . '/assets/gutenberg/build/modal-form',
+			[
+				'render_callback' => [ __CLASS__, 'render_block_modal_form' ],
+			]
 		);
 
 		// Define our Template SelectControl data.
@@ -285,7 +284,7 @@ class SearchWP_Modal_Form {
 		) );
 
 		wp_localize_script(
-			'searchwp-modal-form-block',
+			'searchwp-modal-form-editor-script',
 			'_SEARCHWP_MODAL_FORM_DATA',
 			array(
 				'templates' => $templates,
@@ -293,25 +292,9 @@ class SearchWP_Modal_Form {
 			)
 		);
 
-		register_block_type(
-			'searchwp/modal-form',
-			array(
-				'editor_script'   => 'searchwp-modal-form-block',
-				'editor_style'    => 'searchwp-modal-form-block',
-				'attributes'      => array(
-					'engine'   => array( 'type' => 'string' ),
-					'template' => array( 'type' => 'string' ),
-					'text'     => array( 'type' => 'string' ),
-					'type'     => array( 'type' => 'string' ),
-				),
-				'render_callback' => array( __CLASS__, 'render_block_modal_form' ),
-			)
-		);
-
-		// TODO: Implement i18n.
-		// if ( function_exists( 'wp_set_script_translations' ) ) {
-		// 	wp_set_script_translations( 'searchwp-modal-form-block', 'searchwp-modal-search-form', SEARCHWP_MODAL_FORM_PLUGIN_DIR . 'languages' );
-		// }
+		if ( function_exists( 'wp_set_script_translations' ) ) {
+			wp_set_script_translations( 'searchwp-modal-form-editor-script', 'searchwp-modal-search-form', SEARCHWP_MODAL_FORM_PLUGIN_DIR . 'languages/' );
+		}
 	}
 
 	/**
